@@ -11,12 +11,25 @@ use Illuminate\Support\Facades\DB;
 
 class PeminjamanController extends Controller
 {
-    public function index()
-    {
-        $peminjaman = Peminjaman::with(['member', 'pinjamanBuku.buku'])->latest()->get();
-        return view('peminjaman.index', compact('peminjaman'));
-    }
+    public function index(Request $request)
+{
+    $search = $request->input('search');
 
+    $peminjaman = Peminjaman::when($search, function ($query, $search) {
+        return $query->where('status', 'LIKE', "%{$search}%") // Contoh: mencari berdasarkan status (misal: 'dipinjam')
+                     ->orWhereHas('member', function ($q) use ($search) {
+                         $q->where('nama_member', 'LIKE', "%{$search}%"); // Bisa mencari berdasarkan nama member
+                     })
+                     ->orWhereHas('pinjamanBuku.buku', function ($q) use ($search) {
+                         $q->where('nama_buku', 'LIKE', "%{$search}%"); // Bisa mencari berdasarkan judul buku
+                     });
+    })
+    ->with(['member', 'pinjamanBuku.buku'])
+    ->latest()
+    ->paginate(10); // Mengubah get() menjadi paginate(10) agar seragam dan rapi
+
+    return view('peminjaman.index', compact('peminjaman'));
+}
     public function create()
     {
         $buku = Buku::where('stok', '>', 0)->get();

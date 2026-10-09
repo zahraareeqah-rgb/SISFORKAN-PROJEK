@@ -9,14 +9,21 @@ use Illuminate\Support\Facades\Storage;
 
 class MemberController extends Controller
 {
-    public function index()
-    {
-        $member = Member::with(['peminjaman' => function ($query) {
-            $query->where('status', 'dipinjam');
-        }, 'peminjaman.pinjamanBuku.buku'])->get();
+    public function index(Request $request)
+{
+    $search = $request->input('search');
 
-        return view('member.index', compact('member'));
-    }
+    $member = Member::when($search, function ($query, $search) {
+        return $query->where('nama_member', 'LIKE', "%{$search}%")
+                     ->orWhere('email', 'LIKE', "%{$search}%");
+    })
+    ->with(['peminjaman' => function ($query) {
+        $query->where('status', 'dipinjam');
+    }, 'peminjaman.pinjamanBuku.buku'])
+    ->paginate(10);
+
+    return view('member.index', compact('member'));
+}
 
     public function create()
     {

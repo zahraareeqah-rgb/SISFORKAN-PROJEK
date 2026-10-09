@@ -6,7 +6,7 @@
     <title>Sistem Informasi Perpustakaan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-   <style>
+    <style>
     html, body {
         height: 100%;
     }
@@ -56,11 +56,16 @@
                             <i class="fa-solid fa-users me-1"></i> Member
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item me-2">
                         <a class="nav-link {{ request()->is('peminjaman*') ? 'active fw-bold' : '' }}" href="{{ route('peminjaman.index') }}">
                             <i class="fa-solid fa-right-left me-1"></i> Peminjaman
                         </a>
                     </li>
+                     <li class="nav-item">
+                    <button type="button" class="btn btn-link nav-link text-white text-decoration-none border-0" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                        <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+                    </button>
+                     </li>
                 </ul>
             </div>
         </div>
@@ -82,6 +87,26 @@
         @endif
 
         @yield('content')
+    </div>
+
+    <!-- Logout Modal (Bootstrap 5) -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form action="/sesi/logout" method="GET">
+                        <button type="submit" class="btn btn-primary">Logout</button>
+                    </form>
+                    @csrf
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

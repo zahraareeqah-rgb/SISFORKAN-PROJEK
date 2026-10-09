@@ -9,12 +9,22 @@ use Illuminate\Support\Facades\Storage;
 
 class BukuController extends Controller
 {
-    public function index()
-    {
-        $buku = Buku::with('kategori')->get();
-        return view('buku.index', compact('buku'));
-    }
+    public function index(Request $request)
+{
+    $search = $request->input('search');
 
+    $buku = Buku::when($search, function ($query, $search) {
+        return $query->where('nama_buku', 'LIKE', "%{$search}%")
+                     ->orWhere('pengarang', 'LIKE', "%{$search}%")
+                     ->orWhereHas('kategori', function ($q) use ($search) {
+                         $q->where('nama_kategori', 'LIKE', "%{$search}%"); // 👈 Tambahan untuk mencari berdasarkan kategori
+                     });
+    })
+    ->with('kategori')
+    ->get();
+
+    return view('buku.index', compact('buku'));
+}
     public function create()
     {
         $kategori = Kategori::all();

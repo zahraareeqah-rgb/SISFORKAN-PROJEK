@@ -6,6 +6,17 @@
         <h5 class="m-0 fw-bold text-brand"><i class="fa-solid fa-right-left me-2"></i>Data Peminjaman</h5>
         <a href="{{ route('peminjaman.create') }}" class="btn btn-brand btn-sm"><i class="fa-solid fa-plus me-1"></i> Tambah Data Peminjaman</a>
     </div>
+    <div class="px-3 pt-3 pb-2">
+        <form action="{{ url()->current() }}" method="GET">
+            <div class="input-group w-100">
+                <input type="text" name="search" class="form-control shadow-none" placeholder="Cari data..." value="{{ request('search') }}">
+                <button class="btn btn-outline-primary" type="submit">Cari</button>
+                @if(request('search'))
+                    <a href="{{ url()->current() }}" class="btn btn-outline-secondary">Reset</a>
+                @endif
+            </div>
+        </form>
+    </div>
     <div class="card-body p-0">
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
@@ -75,5 +86,8 @@
             </table>
         </div>
     </div>
+</div>
+<div class="px-3 py-3 border-top bg-white d-flex justify-content-end">
+    {{ $peminjaman->appends(request()->query())->links() }}
 </div>
 @endsection

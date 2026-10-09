@@ -6,21 +6,18 @@
         <h5 class="m-0 fw-bold text-brand"><i class="fa-solid fa-users me-2"></i>Data Kategori</h5>
         <a href="{{ route('kategori.create') }}" class="btn btn-brand btn-sm"><i class="fa-solid fa-plus me-1"></i> Tambah Data Kategori</a>
     </div>
+    <div class="px-3 pt-3 pb-2">
+        <form action="{{ url()->current() }}" method="GET">
+            <div class="input-group w-100">
+                <input type="text" name="search" class="form-control shadow-none" placeholder="Cari data..." value="{{ request('search') }}">
+                <button class="btn btn-outline-primary" type="submit">Cari</button>
+                @if(request('search'))
+                    <a href="{{ url()->current() }}" class="btn btn-outline-secondary">Reset</a>
+                @endif
+            </div>
+        </form>
+    </div>
     <div class="card-body p-0">
-
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show m-3 mb-0" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-brand alert-dismissible fade show m-3 mb-0" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
 
         <div class="table-responsive">
             <table class="table table-hover align-middle mb-0">
@@ -64,4 +61,7 @@
         });
     }, 5000);
 </script>
+<div class="px-3 py-3 border-top bg-white d-flex justify-content-end">
+    {{ $kategori->appends(request()->query())->links() }}
+</div>
 @endsection
